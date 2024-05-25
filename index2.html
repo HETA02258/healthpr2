@@ -3,147 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Material Design Upload Interface</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/10.0.0/material-components-web.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <title>Login</title>
     <style>
         body {
             font-family: 'Lato', sans-serif;
+            background-color: #f5f5f5;
+            background-image: url('https://wallpaper.dog/large/855794.png');
+            background-size: cover;
+            background-position: center;
             margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: #f5f5f5 url('https://wallpaper.dog/large/855794.png') center/cover;
         }
-
         .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
             width: 80%;
-            max-width: 600px;
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: openTheaterDrape 1s forwards; /* Animation added */
         }
-
-        .image-preview img {
-            max-width: 100%;
-            max-height: 100%;
+        h2 {
+            margin-top: 0;
+            font-size: 28px;
+            margin-bottom: 20px;
         }
-
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .send-button {
-            background: #26a69a;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s ease;
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
             font-size: 16px;
-            font-weight: 500;
-            margin-top: 20px;
-            text-transform: uppercase;
+        }
+        .login-button {
+            background-color: #20B2AA; /* Teal color for buttons */
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .login-button:hover {
+            background-color: #1E90FF; /* Darker shade of teal on hover */
         }
 
-        .send-button:hover {
-            background: #00796b;
+        /* Updated styles for login failed animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .login-failed {
+            animation: shake 0.5s linear;
+        }
+
+        /* Animation for theater drape effect */
+        @keyframes openTheaterDrape {
+            0% { opacity: 0; transform: translateY(-100%); }
+            100% { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <input type="file" id="file-upload" accept="image/*">
-        <div class="image-preview" id="upload-area">
-            <img id="uploaded-image" src="" alt="Uploaded Image">
-            <canvas id="cropping-canvas"></canvas>
-        </div>
-        <button class="send-button" id="send-button" onclick="sendImage()">Send</button>
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="text" id="username" name="username" placeholder="Username">
+            <input type="password" id="password" name="password" placeholder="Password">
+            <button type="submit" class="login-button">Login</button>
+        </form>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
-        let cropper;
-        let croppedImageData;
-
-        function initCropper(imageElement) {
-            cropper = new Cropper(imageElement, {
-                aspectRatio: NaN, // Allow free cropping
-                dragMode: 'move', // Allow moving the cropped area
-                crop(event) {
-                    const canvas = document.getElementById('cropping-canvas');
-                    const ctx = canvas.getContext('2d');
-                    const imageData = cropper.getCroppedCanvas().toDataURL();
-                    const img = new Image();
-                    img.src = imageData;
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    img.onload = function() {
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        ctx.drawImage(img, 0, 0);
-                        croppedImageData = imageData;
-                    };
-                }
-            });
-        }
-
-        function previewImage(event) {
-            const fileInput = event.target;
-            const imagePreview = document.getElementById('uploaded-image');
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                imagePreview.src = e.target.result;
-
-                if (cropper) {
-                    cropper.destroy();
-                }
-
-                initCropper(imagePreview);
-            }
-
-            if (file) {
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function sendImage() {
-            const fileInput = document.getElementById('file-upload');
-            if (fileInput.files.length === 0) {
-                alert('No file selected');
-            } else if (!cropper) {
-                alert('Please crop the image or select "Send Full Image"');
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            if (username === "admin" && password === "admin") {
+                window.location.href = "index2.html"; // Redirect to index2.html on successful login
             } else {
-                // Check if the image is cropped
-                if (croppedImageData) {
-                    // Send only the cropped part
-                    sendCroppedImage(croppedImageData);
-                } else {
-                    // Send the full image
-                    const file = fileInput.files[0];
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const fullImageData = e.target.result;
-                        sendFullImage(fullImageData);
-                    }
-                    reader.readAsDataURL(file);
-                }
+                // Display login failed message and initiate intense, quick vibration animation
+                document.querySelector('.container').classList.add('login-failed');
+                setTimeout(() => {
+                    document.querySelector('.container').classList.remove('login-failed');
+                }, 500); // Reduced duration for quick vibration
             }
-        }
-
-        function sendCroppedImage(imageData) {
-            // Here you can implement sending the cropped image data to the server
-            console.log('Sending cropped image:', imageData);
-        }
-
-        function sendFullImage(imageData) {
-            // Here you can implement sending the full image data to the server
-            console.log('Sending full image:', imageData);
-        }
-
-        const fileInput = document.getElementById('file-upload');
-        fileInput.addEventListener('change', previewImage);
+        });
     </script>
 </body>
 </html>
