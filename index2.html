@@ -18,10 +18,9 @@
         .send-button::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(45deg,rgba(255,255,255,0) 25%,transparent 25%,transparent 50%,rgba(255,255,255,0) 50%,rgba(255,255,255,0) 75%,transparent 75%,transparent);background-size:30px 30px;border-radius:20px;pointer-events:none;animation:pulse 2s infinite;z-index:1}
         @keyframes pulse{from{transform:translate(0)}to{transform:translate(30px,30px)}}
         .send-button::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;border:2px solid rgba(0,0,0,0.2);border-radius:30px;pointer-events:none;box-shadow:0 0 0 2px rgba(0,0,0,0.2);z-index:0}
-        .image-preview{margin-bottom:40px;text-align:center}
-        .image-preview img{max-width:100%;border-radius:8px;border:1px solid #e0e0e0}
         .file-input-wrapper.dragover label{background:rgba(38,166,154,0.5)}
         #crop-button{margin-top:20px}
+        #uploaded-image { max-width: 200px; max-height: 200px; } /* Adjust image size here */
     </style>
 </head>
 <body>
