@@ -97,6 +97,16 @@
         .button-container button:hover {
             background: #26A69A;
         }
+        .notification {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        .notification.success {
+            color: green;
+        }
+        .notification.error {
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -114,6 +124,7 @@
             <button onclick="cropImage()">Crop</button>
             <button onclick="sendImage()">Send</button>
         </div>
+        <div class="notification" id="notification"></div>
     </div>
    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
 <script>
@@ -155,14 +166,28 @@
             const formData = new FormData();
             formData.append('image', blob, 'cropped-image.png');
 
-            fetch('https://script.google.com/a/macros/campus.unimib.it/s/AKfycbwDzf0IDIgtS3nU7D-R5JE0iZQ_I-f4QfL1onJSpo7HC-iFPusSdRsOJTda6Y0FFGUW/exec', {
+            fetch('https://script.google.com/macros/s/AKfycbyFS8H_Gl_dFq-jdmMnfKHpyvjY11hsiWrIRbx7a4ZkfynJdkvEXm_q_V0B2nBfikFmhg/exec', {
                 method: 'POST',
                 body: formData,
             })
-            .then(response => response.text())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
+            .then(response => {
+                if (response.ok) {
+                    showNotification('Image sent successfully!', 'success');
+                } else {
+                    showNotification('Error sending image. Please try again.', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Error sending image. Please try again.', 'error');
+            });
         });
+    }
+
+    function showNotification(message, type) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.className = 'notification ' + type;
     }
 </script>
 
