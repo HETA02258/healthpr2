@@ -7,6 +7,7 @@
     <!-- Import Google Material Design library -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/10.0.0/material-components-web.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
 
     <style>
         body {
@@ -54,7 +55,7 @@
             opacity: 0;
             cursor: pointer;
         }
-        .file-input-wrapper label, .send-button {
+        .file-input-wrapper label, .send-button, .crop-button {
             background-color: #26a69a; /* Teal */
             color: white; /* Text color */
             padding: 20px 40px; /* Increased padding */
@@ -73,7 +74,7 @@
             position: relative;
             overflow: hidden;
         }
-        .file-input-wrapper label:hover, .send-button:hover {
+        .file-input-wrapper label:hover, .send-button:hover, .crop-button:hover {
             background-color: #009688; /* Darker teal on hover */
         }
         .send-button {
@@ -129,6 +130,9 @@
         .file-input-wrapper.dragover label {
             background-color: rgba(38, 166, 154, 0.5); /* Teal with opacity */
         }
+        #crop-button {
+            margin-top: 20px; /* Adjust margin as needed */
+        }
     </style>
 </head>
 <body>
@@ -143,10 +147,14 @@
                 <input type="file" id="file-upload" class="file-input" onchange="previewImage()">
             </label>
         </div>
+        <button class="send-button" id="crop-button" onclick="cropImage()">Crop</button>
         <button class="send-button" id="send-button" onclick="checkFile()">Send</button>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
+        let cropper;
+
         function previewImage() {
             const fileInput = document.getElementById('file-upload');
             const imagePreview = document.getElementById('uploaded-image');
@@ -155,6 +163,15 @@
 
             reader.onload = function(e) {
                 imagePreview.src = e.target.result;
+
+                if (cropper) {
+                    cropper.destroy();
+                }
+
+                cropper = new Cropper(imagePreview, {
+                    aspectRatio: 1,
+                    viewMode: 2,
+                });
             }
 
             if (file) {
@@ -162,14 +179,14 @@
             }
         }
 
-        function updateFileLabel() {
-            const fileInput = document.getElementById('file-upload');
-            const fileLabel = document.getElementById('file-label');
-            if (fileInput.files.length > 0) {
-                fileLabel.textContent = fileInput.files[0].name;
-            } else {
-                fileLabel.textContent = 'No file selected';
-            }
+        function cropImage() {
+            const canvas = cropper.getCroppedCanvas();
+            const croppedImage = document.getElementById('uploaded-image');
+            croppedImage.src = canvas.toDataURL('image/png');
+
+            // Destroy the cropper instance after cropping
+            cropper.destroy();
+            cropper = null;
         }
 
         function checkFile() {
