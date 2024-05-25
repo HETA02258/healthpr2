@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: #f5f5f5;
+            background-image: url('https://wallpaper.dog/large/855794.png');
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: openTheaterDrape 1s forwards; /* Animation added */
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .login-button {
+            background-color: #20B2AA; /* Teal color for buttons */
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .login-button:hover {
+            background-color: #1E90FF; /* Darker shade of teal on hover */
+        }
+
+        /* Updated styles for login failed animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
+            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        }
+
+        .login-failed {
+            animation: shake 0.5s linear;
+        }
+
+        /* Animation for theater drape effect */
+        @keyframes openTheaterDrape {
+            0% { opacity: 0; transform: translateY(-100%); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="text" id="username" name="username" placeholder="Username">
+            <input type="password" id="password" name="password" placeholder="Password">
+            <button type="submit" class="login-button">Login</button>
+        </form>
+    </div>
+    <script>
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            if (username === "admin" && password === "admin") {
+                window.location.href = "index2.html"; // Redirect to index2.html on successful login
+            } else {
+                // Display login failed message and initiate intense, quick vibration animation
+                document.querySelector('.container').classList.add('login-failed');
+                setTimeout(() => {
+                    document.querySelector('.container').classList.remove('login-failed');
+                }, 500); // Reduced duration for quick vibration
+            }
+        });
+    </script>
+</body>
+</html>
