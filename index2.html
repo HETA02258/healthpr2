@@ -3,106 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Material Design Upload Interface</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/10.0.0/material-components-web.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <style>
         body {
             font-family: 'Lato', sans-serif;
-            background-color: #f5f5f5;
-            background-image: url('https://wallpaper.dog/large/855794.png');
-            background-size: cover;
-            background-position: center;
-            margin: 0;
-            padding: 0;
+            background: #f5f5f5 url('https://wallpaper.dog/large/855794.png') center/cover;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            margin: 0;
         }
         .container {
-            background-color: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.8);
             border-radius: 30px;
             padding: 40px;
             box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-            width: 80%;
             max-width: 500px;
             text-align: center;
-            border: 1px solid #e0e0e0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            animation: openTheaterDrape 1s forwards; /* Animation added */
         }
         h2 {
-            margin-top: 0;
             font-size: 28px;
-            margin-bottom: 20px;
+            margin: 0 0 20px;
         }
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-            font-size: 16px;
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            cursor: pointer;
         }
-        .login-button {
-            background-color: #20B2AA; /* Teal color for buttons */
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            font-size: 100px;
+            right: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-input-wrapper label {
+            background: #4DB6AC;
             color: white;
-            padding: 15px 30px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 30px;
+            border-radius: 15px;
             cursor: pointer;
             transition: background-color 0.3s ease;
-            font-size: 20px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 500;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
         }
-        .login-button:hover {
-            background-color: #1E90FF; /* Darker shade of teal on hover */
+        .file-input-wrapper label:hover {
+            background: #26A69A;
         }
-
-        /* Updated styles for login failed animation */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-            20%, 40%, 60%, 80% { transform: translateX(10px); }
+        .image-preview {
+            margin-top: 20px;
+            text-align: center;
         }
-
-        .login-failed {
-            animation: shake 0.5s linear;
+        .image-preview img {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
         }
-
-        /* Animation for theater drape effect */
-        @keyframes openTheaterDrape {
-            0% { opacity: 0; transform: translateY(-100%); }
-            100% { opacity: 1; transform: translateY(0); }
+        .file-input-wrapper.dragover label {
+            background: rgba(77, 182, 172, 0.5);
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .button-container button {
+            background: #4DB6AC;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-size: 16px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        .button-container button:hover {
+            background: #26A69A;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Login</h2>
-        <form id="login-form">
-            <input type="text" id="username" name="username" placeholder="Username">
-            <input type="password" id="password" name="password" placeholder="Password">
-            <button type="submit" class="login-button">Login</button>
-        </form>
+        <h2>Upload your image</h2>
+        <div class="file-input-wrapper" id="file-input-wrapper">
+            <label><span id="file-label">Drag & Drop or Click to Select</span>
+                <input type="file" id="file-upload" class="file-input" onchange="previewImage()">
+            </label>
+        </div>
+        <div class="image-preview" id="upload-area">
+            <img id="uploaded-image" src="" alt="">
+        </div>
+        <div class="button-container">
+            <button onclick="cropImage()">Crop</button>
+            <button onclick="sendImage()">Send</button>
+        </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
-        document.getElementById("login-form").addEventListener("submit", function(event) {
-            event.preventDefault();
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            if (username === "admin" && password === "admin") {
-                window.location.href = "index2.html"; // Redirect to index2.html on successful login
-            } else {
-                // Display login failed message and initiate intense, quick vibration animation
-                document.querySelector('.container').classList.add('login-failed');
-                setTimeout(() => {
-                    document.querySelector('.container').classList.remove('login-failed');
-                }, 500); // Reduced duration for quick vibration
+        let cropper;
+
+        function previewImage() {
+            const fileInput = document.getElementById('file-upload');
+            const imagePreview = document.getElementById('uploaded-image');
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.alt = "Uploaded Image";
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(imagePreview, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                });
             }
-        });
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function cropImage() {
+            if (cropper) {
+                const croppedCanvas = cropper.getCroppedCanvas();
+                const croppedImage = document.getElementById('uploaded-image');
+                croppedImage.src = croppedCanvas.toDataURL();
+                cropper.destroy();
+            }
+        }
+
+        function sendImage() {
+            const imagePreview = document.getElementById('uploaded-image');
+            imagePreview.toBlob((blob) => {
+                const formData = new FormData();
+                formData.append('image', blob, 'cropped-image.png');
+
+                fetch('http://localhost:8000/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+            });
+        }
     </script>
 </body>
 </html>
