@@ -179,10 +179,13 @@
             }
         }
 
+        function cropImage
         function cropImage() {
             const canvas = cropper.getCroppedCanvas();
-            const croppedImage = document.getElementById('uploaded-image');
-            croppedImage.src = canvas.toDataURL('image/png');
+            const croppedImage = canvas.toDataURL('image/png');
+            // Here, croppedImage contains the data URL of the cropped image.
+            // You can now send this data to your server or perform any action you want.
+            console.log(croppedImage); // For demonstration, you can log it to the console
 
             // Destroy the cropper instance after cropping
             cropper.destroy();
@@ -193,8 +196,12 @@
             const fileInput = document.getElementById('file-upload');
             if (fileInput.files.length === 0) {
                 alert('No file selected');
+            } else if (!cropper) {
+                alert('Please crop the image before sending');
             } else {
-                // Perform the action associated with the send button
+                // Call the cropImage function to get the cropped image data
+                cropImage();
+                // Now, you can perform the action associated with sending the cropped image data
                 // For example: Submit the form or perform an AJAX request
             }
         }
