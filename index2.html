@@ -115,55 +115,56 @@
             <button onclick="sendImage()">Send</button>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
-    <script>
-        let cropper;
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+<script>
+    let cropper;
 
-        function previewImage() {
-            const fileInput = document.getElementById('file-upload');
-            const imagePreview = document.getElementById('uploaded-image');
-            const file = fileInput.files[0];
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                imagePreview.src = e.target.result;
-                imagePreview.alt = "Uploaded Image";
-                if (cropper) {
-                    cropper.destroy();
-                }
-                cropper = new Cropper(imagePreview, {
-                    aspectRatio: 1,
-                    viewMode: 1,
-                });
-            }
-            if (file) {
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function cropImage() {
+    function previewImage() {
+        const fileInput = document.getElementById('file-upload');
+        const imagePreview = document.getElementById('uploaded-image');
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            imagePreview.alt = "Uploaded Image";
             if (cropper) {
-                const croppedCanvas = cropper.getCroppedCanvas();
-                const croppedImage = document.getElementById('uploaded-image');
-                croppedImage.src = croppedCanvas.toDataURL();
                 cropper.destroy();
             }
-        }
-
-        function sendImage() {
-            const imagePreview = document.getElementById('uploaded-image');
-            imagePreview.toBlob((blob) => {
-                const formData = new FormData();
-                formData.append('image', blob, 'cropped-image.png');
-
-                fetch('http://localhost:8000/upload', {
-                    method: 'POST',
-                    body: formData,
-                })
-                .then(response => response.text())
-                .then(data => console.log(data))
-                .catch(error => console.error('Error:', error));
+            cropper = new Cropper(imagePreview, {
+                aspectRatio: 1,
+                viewMode: 1,
             });
         }
-    </script>
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function cropImage() {
+        if (cropper) {
+            const croppedCanvas = cropper.getCroppedCanvas();
+            const croppedImage = document.getElementById('uploaded-image');
+            croppedImage.src = croppedCanvas.toDataURL();
+            cropper.destroy();
+        }
+    }
+
+    function sendImage() {
+        const imagePreview = document.getElementById('uploaded-image');
+        imagePreview.toBlob((blob) => {
+            const formData = new FormData();
+            formData.append('image', blob, 'cropped-image.png');
+
+            fetch('https://script.google.com/a/macros/campus.unimib.it/s/AKfycbwDzf0IDIgtS3nU7D-R5JE0iZQ_I-f4QfL1onJSpo7HC-iFPusSdRsOJTda6Y0FFGUW/exec', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.text())
+            .then(data => console.log(data))
+            .catch(error => console.error('Error:', error));
+        });
+    }
+</script>
+
 </body>
 </html>
