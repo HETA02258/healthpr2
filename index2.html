@@ -31,7 +31,7 @@
             <img id="uploaded-image" src="" alt="Uploaded Image">
         </div>
         <div class="file-input-wrapper" id="file-input-wrapper">
-            <label><span id="file-label">Drag & Drop or Click to Select</span><input type="file" id="file-upload" class="file-input" onchange="previewImage()"></label>
+            <label><span id="file-label">Drag & Drop or Click to Select</span><input type="file" id="file-upload" class="file-input" onchange="previewImage(event)"></label>
         </div>
         <button class="send-button" id="crop-button" onclick="cropImage()">Crop</button>
         <button class="send-button" id="send-button" onclick="checkFile()">Send</button>
@@ -40,8 +40,8 @@
     <script>
         let cropper;
 
-        function previewImage() {
-            const fileInput = document.getElementById('file-upload');
+        function previewImage(event) {
+            const fileInput = event.target;
             const imagePreview = document.getElementById('uploaded-image');
             const file = fileInput.files[0];
             const reader = new FileReader();
