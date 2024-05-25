@@ -33,18 +33,38 @@
             top: 0;
             left: 0;
         }
+
+        .send-button {
+            background: #26a69a;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 16px;
+            font-weight: 500;
+            margin-top: 20px;
+            text-transform: uppercase;
+        }
+
+        .send-button:hover {
+            background: #00796b;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <input type="file" id="file-upload" accept="image/*">
         <div class="image-preview" id="upload-area">
             <img id="uploaded-image" src="" alt="Uploaded Image">
             <canvas id="cropping-canvas"></canvas>
         </div>
+        <button class="send-button" id="send-button" onclick="sendImage()">Send</button>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
         let cropper;
+        let croppedImageData;
 
         function initCropper(imageElement) {
             cropper = new Cropper(imageElement, {
@@ -61,6 +81,7 @@
                         canvas.width = img.width;
                         canvas.height = img.height;
                         ctx.drawImage(img, 0, 0);
+                        croppedImageData = imageData;
                     };
                 }
             });
@@ -85,6 +106,40 @@
             if (file) {
                 reader.readAsDataURL(file);
             }
+        }
+
+        function sendImage() {
+            const fileInput = document.getElementById('file-upload');
+            if (fileInput.files.length === 0) {
+                alert('No file selected');
+            } else if (!cropper) {
+                alert('Please crop the image or select "Send Full Image"');
+            } else {
+                // Check if the image is cropped
+                if (croppedImageData) {
+                    // Send only the cropped part
+                    sendCroppedImage(croppedImageData);
+                } else {
+                    // Send the full image
+                    const file = fileInput.files[0];
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const fullImageData = e.target.result;
+                        sendFullImage(fullImageData);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            }
+        }
+
+        function sendCroppedImage(imageData) {
+            // Here you can implement sending the cropped image data to the server
+            console.log('Sending cropped image:', imageData);
+        }
+
+        function sendFullImage(imageData) {
+            // Here you can implement sending the full image data to the server
+            console.log('Sending full image:', imageData);
         }
 
         const fileInput = document.getElementById('file-upload');
