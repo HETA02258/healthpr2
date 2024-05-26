@@ -162,25 +162,26 @@
 
     function sendImage() {
         const imagePreview = document.getElementById('uploaded-image');
-        imagePreview.toBlob((blob) => {
-            const formData = new FormData();
-            formData.append('image', blob, 'cropped-image.png');
+        const base64Image = imagePreview.src;
 
-            fetch('https://script.google.com/macros/library/d/1_FLVCADbwoUyZdBLH04t9Y00fQCjqFPLbGc7KbSVYwew037h8alhQisk/4', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => {
-                if (response.ok) {
-                    showNotification('Image sent successfully!', 'success');
-                } else {
-                    showNotification('Error sending image. Please try again.', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
+        fetch('https://script.google.com/macros/s/AKfycbwaNW_BEsJG4xqI5dCGae-ky_deqcRbgxJkK6Ol9mXyvG9BIq7RrLAoG-euGXQgXTVVHg/exec', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ image: base64Image })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.result === 'success') {
+                showNotification('Image sent successfully!', 'success');
+            } else {
                 showNotification('Error sending image. Please try again.', 'error');
-            });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showNotification('Error sending image. Please try again.', 'error');
         });
     }
 
