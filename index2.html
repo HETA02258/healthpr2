@@ -163,10 +163,14 @@
         function sendImage() {
             const imagePreview = document.getElementById('uploaded-image');
             const base64Image = imagePreview.src;
+            const mime = base64Image.split(';')[0].split(':')[1];
+            const imageBlob = base64ToBlob(base64Image, mime);
+            const formData = new FormData();
+            formData.append('image', imageBlob, 'image.jpg');
 
-            fetch('https://forms.gle/K1B3dcDbx1EsqeBy8', {
+            fetch('https://docs.google.com/forms/d/e/1FAIpQLSe4cE9crlI1238UEU8rhDrGZoKrJP1i132592h3mlv1yF-oaQ/formResponse', {
                 method: 'POST',
-                body: JSON.stringify({ image: base64Image })
+                body: formData
             })
             .then(response => {
                 if (response.ok) {
@@ -186,6 +190,10 @@
             notification.textContent = message;
             notification.className = 'notification ' + type;
         }
-    </script>
-</body>
-</html>
+
+        function base64ToBlob(base64, mime) {
+            mime = mime || '';
+            const sliceSize = 1024;
+            const byteCharacters = atob(base64);
+            const byteArrays = [];
+            for (let offset = 0; offset < byte
