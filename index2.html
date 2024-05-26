@@ -164,16 +164,12 @@
             const imagePreview = document.getElementById('uploaded-image');
             const base64Image = imagePreview.src;
 
-            fetch('https://script.google.com/macros/s/AKfycbyzdvGVy8uXsNQR9Uw7GDJF0dDC4M7xJGSHMfvyop5E/dev', {
+            fetch('https://forms.gle/K1B3dcDbx1EsqeBy8', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
                 body: JSON.stringify({ image: base64Image })
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.result === 'success') {
+            .then(response => {
+                if (response.ok) {
                     showNotification('Image sent successfully!', 'success');
                 } else {
                     showNotification('Error sending image. Please try again.', 'error');
