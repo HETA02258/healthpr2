@@ -163,17 +163,17 @@
         function sendImage() {
             const imagePreview = document.getElementById('uploaded-image');
             const base64Image = imagePreview.src;
-            const mime = base64Image.split(';')[0].split(':')[1];
-            const imageBlob = base64ToBlob(base64Image, mime);
-            const formData = new FormData();
-            formData.append('image', imageBlob, 'image.jpg');
 
-            fetch('https://docs.google.com/forms/d/e/1FAIpQLSe4cE9crlI1238UEU8rhDrGZoKrJP1i132592h3mlv1yF-oaQ/formResponse', {
+            fetch('https://script.google.com/macros/s/AKfycbyzdvGVy8uXsNQR9Uw7GDJF0dDC4M7xJGSHMfvyop5E/dev', {
                 method: 'POST',
-                body: formData
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ image: base64Image })
             })
-            .then(response => {
-                if (response.ok) {
+            .then(response => response.json())
+            .then(data => {
+                if (data.result === 'success') {
                     showNotification('Image sent successfully!', 'success');
                 } else {
                     showNotification('Error sending image. Please try again.', 'error');
@@ -190,10 +190,6 @@
             notification.textContent = message;
             notification.className = 'notification ' + type;
         }
-
-        function base64ToBlob(base64, mime) {
-            mime = mime || '';
-            const sliceSize = 1024;
-            const byteCharacters = atob(base64);
-            const byteArrays = [];
-            for (let offset = 0; offset < byte
+    </script>
+</body>
+</html>
